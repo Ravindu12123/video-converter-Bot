@@ -38,7 +38,7 @@ async def force_sub(id):
         if 'left' in left:
             ok = True
         else:
-            ok = True. #ori-False
+            ok = True #ori-False
     except UserNotParticipantError:
         ok = True 
     return ok
