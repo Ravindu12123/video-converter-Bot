@@ -31,14 +31,14 @@ async def force_sub(id):
     FORCESUB = config("FORCESUB", default=None)
     if not str(FORCESUB).startswith("-100"):
         FORCESUB = int("-100" + str(FORCESUB))
-    ok = False
+    ok = True #ori False
     try:
         x = await Drone(GetParticipantRequest(channel=int(FORCESUB), participant=int(id)))
         left = x.stringify()
         if 'left' in left:
             ok = True
         else:
-            ok = False
+            ok = True. #ori-False
     except UserNotParticipantError:
         ok = True 
     return ok
