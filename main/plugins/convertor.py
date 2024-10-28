@@ -218,7 +218,7 @@ async def mp4(event, msg):
         duration = metadata["duration"]
         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]           
         UT = time.time()
-        uploader = await fast_upload(f'{out}', f'{out}', UT, Drone, edit, '**UPLOADING:**')
+        uploader = await fast_upload(f'{out}.mp4', f'{out}.mp4', UT, Drone, edit, '**UPLOADING:**')
         await Drone.send_file(event.chat_id, uploader, caption=f'**CONVERTED by** : @{BOT_UN}', attributes=attributes, force_document=False)
     except Exception as e:
         print(e)
