@@ -1,6 +1,6 @@
 python-decouple
 telethon
-#ethon==1.3.8
+ethon
 cryptg
 pymongo
 motor
