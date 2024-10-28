@@ -13,7 +13,7 @@
 #  License can be found in < https://github.com/Doctorstra/VIDEO-converter/blob/public/LICENSE> .
 
 import os, time, asyncio
-from .. import Drone, LOG_CHANNEL, FORCESUB_UN, MONGODB_URI, ACCESS_CHANNEL
+from .. import Drone, LOG_CHANNEL, FORCESUB_UN, MONGODB_URI, ACCESS_CHANNEL,AUTH_USERS
 from telethon import events, Button
 from telethon.tl.types import DocumentAttributeVideo
 from main.plugins.rename import media_rename
@@ -34,7 +34,7 @@ forcesubtext = f"Hey there!To use this bot you've to join @{FORCESUB_UN}.\n\nAls
 @Drone.on(events.NewMessage(incoming=True,func=lambda e: e.is_private))
 async def compin(event):
     db = Database(MONGODB_URI, 'videoconvertor')
-    if event.is_private:
+    if event.is_private and event.sender_id in AUTH_USERS:
         media = event.media
         if media:
             yy = await force_sub(event.sender_id)
