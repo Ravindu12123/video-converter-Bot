@@ -7,4 +7,4 @@ RUN apt -qq update && apt -qq install -y git python3 python3-pip ffmpeg
 #RUN pip3 install --no-cache-dir -r requirements.txt
 COPY . .
 RUN pip3 install --no-cache-dir -r requirements.txt
-CMD gunicorn app:app && ["bash","convertor.sh"]
+CMD gunicorn app:app && ["python3", "-m", "bot"]
