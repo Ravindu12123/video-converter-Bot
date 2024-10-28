@@ -128,7 +128,7 @@ async def compress(event, msg, ffmpeg_cmd=0, ps_name=None):
     if 'x-matroska' in mime:
         try:
             uploader = await fast_upload(f'{out2}', f'{out2}', UT, Drone, edit, '**UPLOADING:**')
-            await Drone.send_file(event.chat_id, uploader, caption=text, thumb=JPG, force_document=True)
+            await Drone.send_file(event.chat_id, uploader, caption=text, force_document=True)
         except Exception as e:
             await log.delete()
             await LOG_END(event, log_end_text)
@@ -138,7 +138,7 @@ async def compress(event, msg, ffmpeg_cmd=0, ps_name=None):
     elif 'webm' in mime:
         try:
             uploader = await fast_upload(f'{out2}', f'{out2}', UT, Drone, edit, '**UPLOADING:**')
-            await Drone.send_file(event.chat_id, uploader, caption=text, thumb=JPG, force_document=True)
+            await Drone.send_file(event.chat_id, uploader, caption=text,force_document=True)
         except Exception as e:
             await log.delete()
             await LOG_END(event, log_end_text)
@@ -153,11 +153,11 @@ async def compress(event, msg, ffmpeg_cmd=0, ps_name=None):
         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
         try:
             uploader = await fast_upload(f'{out2}', f'{out2}', UT, Drone, edit, '**UPLOADING:**')
-            await Drone.send_file(event.chat_id, uploader, caption=text, thumb=JPG3, attributes=attributes, force_document=False)
+            await Drone.send_file(event.chat_id, uploader, caption=text, attributes=attributes, force_document=False)
         except Exception:
             try:
                 uploader = await fast_upload(f'{out2}', f'{out2}', UT, Drone, edit, '**UPLOADING:**')
-                await Drone.send_file(event.chat_id, uploader, caption=text, thumb=JPG, force_document=True)
+                await Drone.send_file(event.chat_id, uploader, caption=text, force_document=True)
             except Exception as e:
                 await log.delete()
                 await LOG_END(event, log_end_text)
