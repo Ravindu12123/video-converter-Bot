@@ -29,7 +29,17 @@ from main.plugins.encoder import encode
 from main.plugins.ssgen import screenshot
 
 #Don't be a MF by stealing someone's hardwork.
+stime=10
+
 forcesubtext = f"Hey there!To use this bot you've to join."
+def convert_seconds(seconds):
+    hours = seconds // 3600
+    minutes = (seconds % 3600) // 60
+    secs = seconds % 60
+    return f"{hours:02}:{minutes:02}:{secs:02}"
+
+stformated=convert_seconds(stime)
+waitstr=f"wait {stformated} for next work"
 
 @Drone.on(events.NewMessage(incoming=True,func=lambda e: e.is_private))
 async def compin(event):
@@ -122,8 +132,8 @@ async def set_timer(event, list1, list2):
     now = time.time()
     list2.append(f'{now}')
     list1.append(f'{event.sender_id}')
-    await event.client.send_message(event.chat_id, 'You can start a new process again after 5 minutes.')
-    await asyncio.sleep(300)
+    await event.client.send_message(event.chat_id, waitstr)
+    await asyncio.sleep(stime)
     list2.pop(int(timer.index(f'{now}')))
     list1.pop(int(process1.index(f'{event.sender_id}')))
     
@@ -133,7 +143,7 @@ async def check_timer(event, list1, list2):
         index = list1.index(f'{event.sender_id}')
         last = list2[int(index)]
         present = time.time()
-        return False, f"You have to wait {300-round(present-float(last))} seconds more to start a new process!"
+        return False, f"You have to wait {stime-round(present-float(last))} seconds more to start a new process!"
     else:
         return True, None
     
@@ -263,7 +273,7 @@ async def fcomp(event):
         index = process1.index(f'{event.sender_id}')
         last = timer[int(index)]
         present = time.time()
-        return await event.answer(f"You have to wait {300-round(present-float(last))} seconds more to start a new process!", alert=True)
+        return await event.answer(f"You have to wait {stime-round(present-float(last))} seconds more to start a new process!", alert=True)
     button = await event.get_message()
     msg = await button.get_reply_message()
     if not os.path.isdir("encodemedia"):
@@ -274,12 +284,12 @@ async def fcomp(event):
         now = time.time()
         timer.append(f'{now}')
         process1.append(f'{event.sender_id}')
-        await event.client.send_message(event.chat_id, 'You can start a new process again after 5 minutes.')
-        await asyncio.sleep(300)
+        await event.client.send_message(event.chat_id, waitstr)
+        await asyncio.sleep(stime)
         timer.pop(int(timer.index(f'{now}')))
         process1.pop(int(process1.index(f'{event.sender_id}')))
     else:
-        await event.edit(f"Another process in progress!\n\n**[LOG CHANNEL](https://t.me/{LOG_CHANNEL})**", link_preview=False)
+        await event.edit(f"Another process in progress!", link_preview=False)
                        
 @Drone.on(events.callbackquery.CallbackQuery(data="hcomp"))
 async def hcomp(event):
@@ -290,7 +300,7 @@ async def hcomp(event):
         index = process1.index(f'{event.sender_id}')
         last = timer[int(index)]
         present = time.time()
-        return await event.answer(f"You have to wait {300-round(present-float(last))} seconds more to start a new process!", alert=True)
+        return await event.answer(f"You have to wait {stime-round(present-float(last))} seconds more to start a new process!", alert=True)
     button = await event.get_message()
     msg = await button.get_reply_message()
     if not os.path.isdir("encodemedia"):
@@ -301,12 +311,12 @@ async def hcomp(event):
         now = time.time()
         timer.append(f'{now}')
         process1.append(f'{event.sender_id}')
-        await event.client.send_message(event.chat_id, 'You can start a new process again after 5 minutes.')
-        await asyncio.sleep(300)
+        await event.client.send_message(event.chat_id, waitstr)
+        await asyncio.sleep(stime)
         timer.pop(int(timer.index(f'{now}')))
         process1.pop(int(process1.index(f'{event.sender_id}')))
     else:
-        await event.edit(f"Another process in progress!\n\n**[LOG CHANNEL](https://t.me/{LOG_CHANNEL})**", link_preview=False)
+        await event.edit(f"Another process in progress!", link_preview=False)
 
 @Drone.on(events.callbackquery.CallbackQuery(data="264"))
 async def _264(event):
@@ -325,7 +335,7 @@ async def _264(event):
         os.rmdir("encodemedia")
         await set_timer(event, process1, timer) 
     else:
-        await event.edit(f"Another process in progress!\n\n**[LOG CHANNEL](https://t.me/{LOG_CHANNEL})**", link_preview=False)
+        await event.edit(f"Another process in progress!", link_preview=False)
       
 @Drone.on(events.callbackquery.CallbackQuery(data="265"))
 async def _265(event):
@@ -344,7 +354,7 @@ async def _265(event):
         os.rmdir("encodemedia")
         await set_timer(event, process1, timer) 
     else:
-        await event.edit(f"Another process in progress!\n\n**[LOG CHANNEL](https://t.me/{LOG_CHANNEL})**", link_preview=False)
+        await event.edit(f"Another process in progress!", link_preview=False)
         
 @Drone.on(events.callbackquery.CallbackQuery(data="240"))
 async def _240(event):
@@ -363,7 +373,7 @@ async def _240(event):
         os.rmdir("encodemedia")
         await set_timer(event, process1, timer) 
     else:
-        await event.edit(f"Another process in progress!\n\n**[LOG CHANNEL](https://t.me/{LOG_CHANNEL})**", link_preview=False)
+        await event.edit(f"Another process in progress!", link_preview=False)
         
 @Drone.on(events.callbackquery.CallbackQuery(data="360"))
 async def _360(event):
@@ -382,7 +392,7 @@ async def _360(event):
         os.rmdir("encodemedia")
         await set_timer(event, process1, timer) 
     else:
-        await event.edit(f"Another process in progress!\n\n**[LOG CHANNEL](https://t.me/{LOG_CHANNEL})**", link_preview=False)
+        await event.edit(f"Another process in progress!", link_preview=False)
         
 @Drone.on(events.callbackquery.CallbackQuery(data="480"))
 async def _480(event):
@@ -401,7 +411,7 @@ async def _480(event):
         os.rmdir("encodemedia")
         await set_timer(event, process1, timer) 
     else:
-        await event.edit(f"Another process in progress!\n\n**[LOG CHANNEL](https://t.me/{LOG_CHANNEL})**", link_preview=False)
+        await event.edit(f"Another process in progress!", link_preview=False)
         
 @Drone.on(events.callbackquery.CallbackQuery(data="720"))
 async def _720(event):
@@ -420,7 +430,7 @@ async def _720(event):
         os.rmdir("encodemedia")
         await set_timer(event, process1, timer) 
     else:
-        await event.edit(f"Another process in progress!\n\n**[LOG CHANNEL](https://t.me/{LOG_CHANNEL})**", link_preview=False)
+        await event.edit(f"Another process in progress!", link_preview=False)
           
 @Drone.on(events.callbackquery.CallbackQuery(data="sshots"))
 async def ss_(event):
@@ -431,7 +441,7 @@ async def ss_(event):
         index = process1.index(f'{event.sender_id}')
         last = timer[int(index)]
         present = time.time()
-        return await event.answer(f"You have to wait {120-round(present-float(last))} seconds more to start a new process!", alert=True)
+        return await event.answer(f"You have to wait {stime-round(present-float(last))} seconds more to start a new process!", alert=True)
     button = await event.get_message()
     msg = await button.get_reply_message()
     await event.delete()
@@ -439,8 +449,8 @@ async def ss_(event):
     now = time.time()
     timer.append(f'{now}')
     process1.append(f'{event.sender_id}')
-    await event.client.send_message(event.chat_id, 'You can start a new process again after 2 minutes.')
-    await asyncio.sleep(120)
+    await event.client.send_message(event.chat_id, waitstr)
+    await asyncio.sleep(stime)
     timer.pop(int(timer.index(f'{now}')))
     process1.pop(int(process1.index(f'{event.sender_id}')))
     
