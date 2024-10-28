@@ -34,7 +34,7 @@ forcesubtext = f"Hey there!To use this bot you've to join @{FORCESUB_UN}.\n\nAls
 @Drone.on(events.NewMessage(incoming=True,func=lambda e: e.is_private))
 async def compin(event):
     db = Database(MONGODB_URI, 'videoconvertor')
-    if event.is_private and event.sender_id in AUTH_USERS:
+    if event.is_private:
         media = event.media
         if media:
             yy = await force_sub(event.sender_id)
