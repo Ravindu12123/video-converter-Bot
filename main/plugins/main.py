@@ -55,7 +55,7 @@ async def compin(event):
                 return await event.reply(f'you are Banned to use me!\n\ncontact [SUPPORT]({SUPPORT_LINK})', link_preview=False)
             video = event.file.mime_type
             if 'video' in video:
-                sent_ = await event.reply("**Select What you want**",,
+                sent_ = await event.reply("**Select What you want**",
                             buttons=[
                                 [Button.inline("ENCODE 📛", data="encode"),
                                  Button.inline("COMPRESS 🗜️", data="compress")],
