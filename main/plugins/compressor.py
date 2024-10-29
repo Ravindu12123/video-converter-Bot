@@ -58,6 +58,7 @@ async def compress(event, msg, ffmpeg_cmd=0, ps_name=None):
     log = await LOG_START(event, f'**{str(_ps)} PROCESS STARTED**\n\n[Bot is busy now]({SUPPORT_LINK})')
     log_end_text = f'**{_ps} PROCESS FINISHED**\n\n[Bot is free now]({SUPPORT_LINK})'
     try:
+        await edit.edit("trying to run ffmpeg_progress...")
         await fast_download(n, file, Drone, edit, DT, "**DOWNLOADING:**")
     except Exception as e:
         os.rmdir("encodemedia")
@@ -124,7 +125,7 @@ async def compress(event, msg, ffmpeg_cmd=0, ps_name=None):
     if ps_name != "**ENCODING:**":
         text = f'**COMPRESSED by** : @{BOT_UN}\n\nbefore compressing : `{i_size}`\nafter compressing : `{f_size}`'
     UT = time.time()
-    await log.edit("Uploading file.")
+    await log.edit("Uploading file...")
     if 'x-matroska' in mime:
         try:
             uploader = await fast_upload(f'{out2}', f'{out2}', UT, Drone, edit, '**UPLOADING:**')
