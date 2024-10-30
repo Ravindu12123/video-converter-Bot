@@ -224,7 +224,7 @@ async def voptimize(event, msg):
         except Exception as e:
             rdir(mdir)
             print(e)
-            return await edit.edit(f"An error occured while uploading.\n\nContact [SUPPORT]({SUPPORT_LINK})", link_preview=False)
+            return await edit.edit(f"An error occured while uploading.\n\n{e}", link_preview=False)
     await edit.delete()
     await clean_dir(mdir)
     
