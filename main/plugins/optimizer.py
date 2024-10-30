@@ -7,8 +7,37 @@ from ethon.pyfunc import bash, video_metadata
 from ethon.pyutils import rename
 from datetime import datetime as dt
 from telethon.tl.types import DocumentAttributeVideo
+from moviepy.editor import VideoFileClip
+import shutil
+
+#clean dir after all.---------------
+def clean_dir(directory_path):
+    # Check if the specified directory exists
+    if not os.path.isdir(directory_path):
+        print(f"Directory {directory_path} does not exist.")
+        return
+
+    # Iterate through all files and folders in the directory
+    for filename in os.listdir(directory_path):
+        file_path = os.path.join(directory_path, filename)
+        
+        try:
+            # Check if it's a file or directory and delete accordingly
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)  # Remove file or symbolic link
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)  # Remove directory and all its contents
+        except Exception as e:
+            print(f"Failed to delete {file_path}. Reason: {e}")
+            return jsonify({"error": f"Failed to delete files.","reson":f"{e}"}), 400
+
+    print(f"Directory {directory_path} cleaned successfully.")
+
+#optimising-------------------‐----------‐--
 
 
+
+#accepting command--------------------------
 async def voptimize(event, msg):
     Drone = event.client
     edit = await Drone.send_message(event.chat_id, "Trying to process!", reply_to=msg.id)
