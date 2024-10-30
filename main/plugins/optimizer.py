@@ -34,7 +34,9 @@ def clean_dir(directory_path):
     print(f"Directory {directory_path} cleaned successfully.")
 
 #optimising-------------------‐----------‐--
-
+def optimize_video(input_path, output_path):
+    with VideoFileClip(input_path) as video:
+        video.write_videofile(output_path, bitrate="500k", preset="ultrafast", audio=True)
 
 
 #accepting command--------------------------
