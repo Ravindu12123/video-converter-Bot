@@ -138,7 +138,8 @@ async def voptimize(event, msg):
         out = ((msg.file.name).split("."))[0]
     else:
         out = dt.now().isoformat("_", "seconds")
-    outn=f"{out}.mp4"
+    outn=os.path.join(mdir,f"{out}.mp4")
+    name=os.path.join(mdir,name)
     try:
         DT = time.time()
         await fast_download(name, file, Drone, edit, DT, "**DOWNLOADING:**")
@@ -156,7 +157,7 @@ async def voptimize(event, msg):
         return await edit.edit(f"An error occured while converting!\n\n{e}")
     else:
       await edit.edit("**file type:mp4**")
-    ls=f"optimized_{out}.mp4"
+    ls=os.path.join(mdir,f"optimized_{out}.mp4")
     try:
         await edit.edit("**OPTIMIZING**")
         if ftmp4 == 0:
@@ -166,31 +167,14 @@ async def voptimize(event, msg):
         #await optimize_video(outn,ls,edit)
         # else:
         # await optimize_video(name,ls,edit)
-
-        progress = "Optimizing: 0%"
-
-        def progress_callback(current, total):
-           percent = int((current / total) * 100)
-           progress = f"Optimizing: {percent}%"
-
-        async def print_progress():
-           while "Optimizing" in progress:
-             print(progress)
-             await edit.edit(f"**OPTIMIZING**\n\n{progress}")
-             time.sleep(2)
-       
-        progress_thread = threading.Thread(target=print_progress)
-        progress_thread.start()
+        
         with VideoFileClip(input_path) as video:
           video.write_videofile(
             output_path,
             bitrate="500k",
             preset="ultrafast",
-            audio=True,
-            logger=progress_callback
+            audio=True
           )
-        progress = "Optimized"  
-        progress_thread.join()  # Ensure the progress thread ends
         print("Optimization complete!")
     except Exception as e:
         #rdir(mdir)
