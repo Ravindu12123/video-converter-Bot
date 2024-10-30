@@ -171,26 +171,24 @@ async def voptimize(event, msg):
  
     #uploading--------------------‐
     metadata = video_metadata(ls)
-        width = metadata["width"]
-        height = metadata["height"]
-        duration = metadata["duration"]
-        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
+    width = metadata["width"]
+    height = metadata["height"]
+    duration = metadata["duration"]
+    attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
+    try:
+        jpg = await generate_thumb(ls)
+        uploader = await fast_upload(f'{ls}', f'{ls}', UT, Drone, edit, '**UPLOADING:**')
+        await Drone.send_file(event.chat_id, uploader, caption=text, thumb=jpg, attributes=attributes, force_document=False)
+    except Exception:
         try:
-            jpg = await generate_thumb(ls)
             uploader = await fast_upload(f'{ls}', f'{ls}', UT, Drone, edit, '**UPLOADING:**')
-            await Drone.send_file(event.chat_id, uploader, caption=text, thumb=jpg, attributes=attributes, force_document=False)
-        except Exception:
-            try:
-                uploader = await fast_upload(f'{ls}', f'{ls}', UT, Drone, edit, '**UPLOADING:**')
-                await Drone.send_file(event.chat_id, uploader, caption=text, thumb=JPG, force_document=True)
-            except Exception as e:
-                await log.delete()
-                await LOG_END(event, log_end_text)
-                rdir(mdir)
-                print(e)
-                return await edit.edit(f"An error occured while uploading.\n\nContact [SUPPORT]({SUPPORT_LINK})", link_preview=False)
-
-    
+            await Drone.send_file(event.chat_id, uploader, caption=text, thumb=JPG, force_document=True)
+        except Exception as e:
+            await log.delete()
+            await LOG_END(event, log_end_text)
+            rdir(mdir)
+            print(e)
+            return await edit.edit(f"An error occured while uploading.\n\nContact [SUPPORT]({SUPPORT_LINK})", link_preview=False)
     await edit.delete()
     await clean_dir(mdir)
     
