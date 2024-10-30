@@ -11,6 +11,30 @@ from moviepy.editor import VideoFileClip
 import shutil
 import threading
 
+mdir="videooptimize"
+#remove dir if exist------‐---------
+def rdir(directory_path):
+    if os.path.exists(directory_path) and os.path.isdir(directory_path):
+        try:
+            shutil.rmtree(directory_path)
+            print(f"Directory '{directory_path}' has been removed.")
+        except Exception as e:
+            print(f"Failed to remove directory '{directory_path}'. Reason: {e}")
+    else:
+        print(f"Directory '{directory_path}' does not exist.")
+
+
+#create thumb--------------------‐
+def generate_thumbnail(video_path, thumb_path="thumb.jpg"):
+    with VideoFileClip(video_path) as video:
+        # Capture frame at the first second
+        frame = video.get_frame(1.0)
+        # Convert to Image and save as thumbnail
+        img = Image.fromarray(frame)
+        img.thumbnail((320, 180))  # Resize thumbnail to 320x180
+        img.save(thumb_path, "JPEG")
+    return thumb_path
+
 
 #clean dir after all.---------------
 def clean_dir(directory_path):
@@ -111,42 +135,62 @@ async def voptimize(event, msg):
     else:
         return await edit.edit("**Sorry🥶,Cannot find or make name for that file!!**")
     if x:
-        out = ((msg.file.name).split("."))[0] 
+        out = ((msg.file.name).split("."))[0]
     else:
         out = dt.now().isoformat("_", "seconds")
+    name=os.path.join(mdir,name)
+    outn=os.path.join(mdir,f"{out}.mp4")
     try:
         DT = time.time()
         await fast_download(name, file, Drone, edit, DT, "**DOWNLOADING:**")
     except Exception as e:
+        rdir(mdir)
         print(e)
         return await edit.edit(f"An error occured while downloading!\n\nContact [SUPPORT]({SUPPORT_LINK})")
     if ftmp4==0:
       try:
         await edit.edit("**Converting...\n\nNote:\n  🔰because file was not a mp4 file!**")
-        rename(name, f'{out}.mp4')
+        rename(name, outn)
       except Exception as e:
         print(e)
+        rdir(mdir)
         return await edit.edit(f"An error occured while converting!\n\nContact [SUPPORT]({SUPPORT_LINK})")
-    ls=f"optimized_{out}.mp4"
+    ls=os.path.join(mdir,f"optimized_{out}.mp4")
     res=0
     try:
-      await edit.edit("**OPTIMIZING**)
+      await edit.edit("**OPTIMIZING**")
       if ftmp4==0:
         os.remove(name)
-        res=await optimize_video(f"{out}.mp4",ls,edit)
+        res=await optimize_video(outn,ls,edit)
       else:
         res=await optimize_video(name,ls,edit)
     except Exception as e:
-        print("error while optimizing!")
-        return await edit.edit(f"An Erro while optimizing! er:{e}")
-    try:
-        UT = time.time()
-        uploader = await fast_upload(f'{out}.mp4', f'{out}.mp4', UT, Drone, edit, '**UPLOADING:**')
-        await Drone.send_file(event.chat_id, uploader, thumb=JPG, caption=f'**CONVERTED by** : @{BOT_UN}', force_document=True)
-    except Exception as e:
+        rdir(mdir)
         print(e)
-        return await edit.edit(f"An error occured while uploading!\n\nContact [SUPPORT]({SUPPORT_LINK})")
-    await edit.delete() 
-    if ftmp4==0:
-       os.remove(f'{out}.mp4')
+        return await edit.edit(f"An Erro while optimizing! er:{e}")
+ 
+    #uploading--------------------‐
+    metadata = video_metadata(ls)
+        width = metadata["width"]
+        height = metadata["height"]
+        duration = metadata["duration"]
+        attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
+        try:
+            jpg = await generate_thumb(ls)
+            uploader = await fast_upload(f'{ls}', f'{ls}', UT, Drone, edit, '**UPLOADING:**')
+            await Drone.send_file(event.chat_id, uploader, caption=text, thumb=jpg, attributes=attributes, force_document=False)
+        except Exception:
+            try:
+                uploader = await fast_upload(f'{ls}', f'{ls}', UT, Drone, edit, '**UPLOADING:**')
+                await Drone.send_file(event.chat_id, uploader, caption=text, thumb=JPG, force_document=True)
+            except Exception as e:
+                await log.delete()
+                await LOG_END(event, log_end_text)
+                rdir(mdir)
+                print(e)
+                return await edit.edit(f"An error occured while uploading.\n\nContact [SUPPORT]({SUPPORT_LINK})", link_preview=False)
+
+    
+    await edit.delete()
+    await clean_dir(mdir)
     
