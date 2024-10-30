@@ -9,6 +9,8 @@ from datetime import datetime as dt
 from telethon.tl.types import DocumentAttributeVideo
 from moviepy.editor import VideoFileClip
 import shutil
+import threading
+
 
 #clean dir after all.---------------
 def clean_dir(directory_path):
@@ -34,9 +36,51 @@ def clean_dir(directory_path):
     print(f"Directory {directory_path} cleaned successfully.")
 
 #optimising-------------------‐----------‐--
-def optimize_video(input_path, output_path):
-    with VideoFileClip(input_path) as video:
-        video.write_videofile(output_path, bitrate="500k", preset="ultrafast", audio=True)
+
+
+def optimize_video(input_path, output_path,edit):
+    # Initialize progress to 0%
+    progress = "Optimizing: 0%"
+
+    def progress_callback(current, total):
+        # Calculate and update the progress percentage
+        percent = int((current / total) * 100)
+        progress = f"Optimizing: {percent}%"
+
+    async def print_progress():
+        # Print progress every 2 seconds until optimization completes or an error occurs
+        while "Optimizing" in progress:
+            print(progress)
+            await edit.edit(progress)
+            time.sleep(2)
+
+    # Start a separate thread to print progress every 2 seconds
+    progress_thread = threading.Thread(target=print_progress)
+    progress_thread.start()
+
+    try:
+        with VideoFileClip(input_path) as video:
+            video.write_videofile(
+                output_path,
+                bitrate="500k",
+                preset="ultrafast",
+                audio=True,
+                progress_bar=False,  # Disable the default progress bar
+                logger=None,         # Suppress moviepy's output
+                callback=progress_callback  # Pass the progress callback
+            )
+        # Update to indicate that optimization is complete
+        progress = "Optimized"
+    except Exception as e:
+        # Update progress_dict to reflect error
+        progress = f"Error: {str(e)}"
+        print(f"Error optimizing {filename}: {e}")
+        return 0
+    finally:
+        progress_thread.join()  # Ensure the progress thread ends
+
+    print("Optimization complete for:", filename)
+    return 1
 
 
 #accepting command--------------------------
@@ -76,15 +120,25 @@ async def voptimize(event, msg):
     except Exception as e:
         print(e)
         return await edit.edit(f"An error occured while downloading!\n\nContact [SUPPORT]({SUPPORT_LINK})")
-    if ftmp4==1:
+    if ftmp4==0:
       try:
         await edit.edit("**Converting...\n\nNote:\n  🔰because file was not a mp4 file!**")
         rename(name, f'{out}.mp4')
       except Exception as e:
         print(e)
         return await edit.edit(f"An error occured while converting!\n\nContact [SUPPORT]({SUPPORT_LINK})")
-    
-    
+    ls=f"optimized_{out}.mp4"
+    res=0
+    try:
+      await edit.edit("**OPTIMIZING**)
+      if ftmp4==0:
+        os.remove(name)
+        res=await optimize_video(f"{out}.mp4",ls,edit)
+      else:
+        res=await optimize_video(name,ls,edit)
+    except Exception as e:
+        print("error while optimizing!")
+        return await edit.edit(f"An Erro while optimizing! er:{e}")
     try:
         UT = time.time()
         uploader = await fast_upload(f'{out}.mp4', f'{out}.mp4', UT, Drone, edit, '**UPLOADING:**')
@@ -92,5 +146,7 @@ async def voptimize(event, msg):
     except Exception as e:
         print(e)
         return await edit.edit(f"An error occured while uploading!\n\nContact [SUPPORT]({SUPPORT_LINK})")
-    await edit.delete()                      
-    os.remove(f'{out}.mp4')
+    await edit.delete() 
+    if ftmp4==0:
+       os.remove(f'{out}.mp4')
+    
