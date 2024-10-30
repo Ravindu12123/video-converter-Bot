@@ -64,7 +64,7 @@ async def compin(event):
                                  Button.inline("RENAME 🔄", data="rename")],
                                 [Button.inline("SSHOTS 🌆", data="sshots"),
                                  Button.inline("TRIM ✂️", data="trim")],
-                                [Button.inline("OPTIMIZE VIDEO🚀",data="optimize")]
+                                
                             ])
             elif 'png' in video:
                 return
@@ -123,7 +123,7 @@ async def back(event):
                      Button.inline("RENAME 🔄", data="rename")],
                     [Button.inline("SSHOTS 🌆", data="sshots"),
                      Button.inline("TRIM ✂️", data="trim")],
-                    [Button.inline("OPTIMIZE VIDEO🚀",data="optimize")]
+                    
     ])
     
 #-----------------------------------------------------------------------------------------
