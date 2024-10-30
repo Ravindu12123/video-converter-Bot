@@ -182,15 +182,13 @@ async def voptimize(event, msg):
         progress_thread = threading.Thread(target=print_progress)
         progress_thread.start()
         with VideoFileClip(input_path) as video:
-                 video.write_videofile(
-                      output_path,
-                      bitrate="500k",
-                      preset="ultrafast",
-                      audio=True,
-                      progress_bar=False,  # Disable the default progress bar
-                      logger=None,         # Suppress moviepy's output
-                      callback=progress_callback  # Pass the progress callback
-                       )
+        video.write_videofile(
+            output_path,
+            bitrate="500k",
+            preset="ultrafast",
+            audio=True,
+            logger=progress_callback
+        )
         progress = "Optimized"  
         progress_thread.join()  # Ensure the progress thread ends
         print("Optimization complete!")
