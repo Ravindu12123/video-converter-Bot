@@ -98,12 +98,12 @@ def optimize_video(input_path, output_path,edit):
     except Exception as e:
         # Update progress_dict to reflect error
         progress = f"Error: {str(e)}"
-        return print(f"Error optimizing : {e}")
+        print(f"Error optimizing : {e}")
         #return f"Error optimizing : {e}"
     finally:
         progress_thread.join()  # Ensure the progress thread ends
 
-    return print("Optimization complete!")
+    print("Optimization complete!")
     #return "Optimization complete for:", filename
 
 
@@ -159,11 +159,50 @@ async def voptimize(event, msg):
       await edit.edit("**file type:mp4**")
     ls=os.path.join(mdir,f"optimized_{out}.mp4")
     try:
-      await edit.edit("**OPTIMIZING**")
-      if ftmp4 == 0:
-        await optimize_video(outn,ls,edit)
-      else:
-        await optimize_video(name,ls,edit)
+        await edit.edit("**OPTIMIZING**")
+        if ftmp4 == 0:
+           name=outn
+        input_path=name
+        output_path=ls
+        #await optimize_video(outn,ls,edit)
+        # else:
+        # await optimize_video(name,ls,edit)
+
+        progress = "Optimizing: 0%"
+
+        def progress_callback(current, total):
+           percent = int((current / total) * 100)
+           progress = f"Optimizing: {percent}%"
+
+        async def print_progress():
+           while "Optimizing" in progress:
+             print(progress)
+             await edit.edit(f"**OPTIMIZING**\n\n{progress}")
+             time.sleep(2)
+       
+        progress_thread = threading.Thread(target=print_progress)
+        progress_thread.start()
+
+        try:
+            with VideoFileClip(input_path) as video:
+                 video.write_videofile(
+                      output_path,
+                      bitrate="500k",
+                      preset="ultrafast",
+                      audio=True,
+                      progress_bar=False,  # Disable the default progress bar
+                      logger=None,         # Suppress moviepy's output
+                      callback=progress_callback  # Pass the progress callback
+                       )
+            progress = "Optimized"
+        except Exception as e:
+             progress = f"Error: {str(e)}"
+             print(f"Error optimizing : {e}")
+        finally:
+             progress_thread.join()  # Ensure the progress thread ends
+
+        print("Optimization complete!")  
+      
     except Exception as e:
         rdir(mdir)
         print(e)
