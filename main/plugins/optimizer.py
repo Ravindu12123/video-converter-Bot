@@ -71,7 +71,7 @@ def optimize_video(input_path, output_path,edit):
         percent = int((current / total) * 100)
         progress = f"Optimizing: {percent}%"
 
-    async def print_progress(edit):
+    async def print_progress():
         # Print progress every 2 seconds until optimization completes or an error occurs
         while "Optimizing" in progress:
             print(progress)
