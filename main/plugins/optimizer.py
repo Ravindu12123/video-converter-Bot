@@ -208,6 +208,7 @@ async def voptimize(event, msg):
         return await edit.edit(f"An Erro while optimizing! er:{e}")
  
     #uploading--------------------‐
+    UT = time.time()
     metadata = video_metadata(ls)
     width = metadata["width"]
     height = metadata["height"]
