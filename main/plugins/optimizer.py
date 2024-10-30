@@ -143,7 +143,7 @@ async def voptimize(event, msg):
         DT = time.time()
         await fast_download(name, file, Drone, edit, DT, "**DOWNLOADING:**")
     except Exception as e:
-        rdir(mdir)
+        #rdir(mdir)
         print(e)
         return await edit.edit(f"An error occured while downloading!\n\nContact [SUPPORT]({SUPPORT_LINK})")
     if ftmp4 == 0:
@@ -152,7 +152,7 @@ async def voptimize(event, msg):
         rename(name, outn)
       except Exception as e:
         print(e)
-        rdir(mdir)
+        #rdir(mdir)
         return await edit.edit(f"An error occured while converting!\n\n{e}")
     else:
       await edit.edit("**file type:mp4**")
@@ -203,7 +203,7 @@ async def voptimize(event, msg):
         print("Optimization complete!")  
       
     except Exception as e:
-        rdir(mdir)
+        #rdir(mdir)
         print(e)
         return await edit.edit(f"An Erro while optimizing! er:{e}")
  
@@ -223,7 +223,7 @@ async def voptimize(event, msg):
             uploader = await fast_upload(f'{ls}', f'{ls}', UT, Drone, edit, '**UPLOADING:**')
             await Drone.send_file(event.chat_id, uploader, caption=text, thumb=JPG, force_document=True)
         except Exception as e:
-            rdir(mdir)
+            #rdir(mdir)
             print(e)
             return await edit.edit(f"An error occured while uploading.\n\n{e}", link_preview=False)
     await edit.delete()
