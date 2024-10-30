@@ -101,12 +101,12 @@ def optimize_video(input_path, output_path,edit):
         # Update progress_dict to reflect error
         progress = f"Error: {str(e)}"
         print(f"Error optimizing : {e}")
-        return 0
+        return f"Error optimizing : {e}"
     finally:
         progress_thread.join()  # Ensure the progress thread ends
 
     print("Optimization complete for:", filename)
-    return 1
+    return "Optimization complete for:", filename
 
 
 #accepting command--------------------------
