@@ -62,7 +62,8 @@ async def compin(event):
                                 [Button.inline("CONVERT ⏳", data="convert"),
                                  Button.inline("RENAME 🔄", data="rename")],
                                 [Button.inline("SSHOTS 🌆", data="sshots"),
-                                 Button.inline("TRIM ✂️", data="trim")]
+                                 Button.inline("TRIM ✂️", data="trim")],
+                                [Button.inline("OPTIMIZE VIDEO🚀",data="optimize")]
                             ])
             elif 'png' in video:
                 return
@@ -120,7 +121,9 @@ async def back(event):
                     [Button.inline("CONVERT ⏳", data="convert"),
                      Button.inline("RENAME 🔄", data="rename")],
                     [Button.inline("SSHOTS 🌆", data="sshots"),
-                     Button.inline("TRIM ✂️", data="trim")]])
+                     Button.inline("TRIM ✂️", data="trim")],
+                    [Button.inline("OPTIMIZE VIDEO🚀",data="optimize")]
+    ])
     
 #-----------------------------------------------------------------------------------------
 
@@ -146,7 +149,24 @@ async def check_timer(event, list1, list2):
         return False, f"You have to wait {stime-round(present-float(last))} seconds more to start a new process!"
     else:
         return True, None
-    
+
+
+@Drone.on(events.callbackquery.CallbackQuery(data="optimize"))
+async def optimize_v(event):
+    yy = await force_sub(event.sender_id)
+    if yy is True:
+        return await event.reply(forcesubtext)
+    button = await event.get_message()
+    msg = await button.get_reply_message() 
+    if not os.path.isdir("videooptimize"):
+        await event.delete()
+        os.mkdir("videooptimize")
+        await voptimize(event, msg)
+        os.rmdir("videooptimize")
+    else:
+        await event.edit("Another process in progress!")
+
+
 @Drone.on(events.callbackquery.CallbackQuery(data="mp3"))
 async def vtmp3(event):
     yy = await force_sub(event.sender_id)
