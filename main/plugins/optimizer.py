@@ -75,7 +75,7 @@ def optimize_video(input_path, output_path,edit):
         # Print progress every 2 seconds until optimization completes or an error occurs
         while "Optimizing" in progress:
             print(progress)
-            await edit.edit(progress)
+            await edit.edit(f"**OPTIMIZING**\n\n{progress}")
             time.sleep(2)
 
     # Start a separate thread to print progress every 2 seconds
@@ -147,20 +147,21 @@ async def voptimize(event, msg):
         rdir(mdir)
         print(e)
         return await edit.edit(f"An error occured while downloading!\n\nContact [SUPPORT]({SUPPORT_LINK})")
-    if ftmp4==0:
+    if ftmp4 == 0:
       try:
         await edit.edit("**Converting...\n\nNote:\n  🔰because file was not a mp4 file!**")
         rename(name, outn)
       except Exception as e:
         print(e)
         rdir(mdir)
-        return await edit.edit(f"An error occured while converting!\n\nContact [SUPPORT]({SUPPORT_LINK})")
+        return await edit.edit(f"An error occured while converting!\n\n{e}")
+    else:
+      await edit.edit("**file type:mp4**")
     ls=os.path.join(mdir,f"optimized_{out}.mp4")
     res=0
     try:
       await edit.edit("**OPTIMIZING**")
-      if ftmp4==0:
-        os.remove(name)
+      if ftmp4 == 0:
         res=await optimize_video(outn,ls,edit)
       else:
         res=await optimize_video(name,ls,edit)
