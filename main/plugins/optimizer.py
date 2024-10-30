@@ -75,9 +75,7 @@ def optimize_video(input_path, output_path,edit):
         # Print progress every 2 seconds until optimization completes or an error occurs
         while "Optimizing" in progress:
             print(progress)
-            #async def pp(edit):
-            # await edit.edit(f"**OPTIMIZING**\n\n{progress}")
-            # pp(edit)
+            await edit.edit(f"**OPTIMIZING**\n\n{progress}")
             time.sleep(2)
 
     # Start a separate thread to print progress every 2 seconds
