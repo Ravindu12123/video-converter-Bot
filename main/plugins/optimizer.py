@@ -99,12 +99,12 @@ def optimize_video(input_path, output_path,edit):
         # Update progress_dict to reflect error
         progress = f"Error: {str(e)}"
         print(f"Error optimizing : {e}")
-        return f"Error optimizing : {e}"
+        #return f"Error optimizing : {e}"
     finally:
         progress_thread.join()  # Ensure the progress thread ends
 
     print("Optimization complete for:", filename)
-    return "Optimization complete for:", filename
+    #return "Optimization complete for:", filename
 
 
 #accepting command--------------------------
@@ -158,13 +158,12 @@ async def voptimize(event, msg):
     else:
       await edit.edit("**file type:mp4**")
     ls=os.path.join(mdir,f"optimized_{out}.mp4")
-    res=0
     try:
       await edit.edit("**OPTIMIZING**")
       if ftmp4 == 0:
-        res=await optimize_video(outn,ls,edit)
+        await optimize_video(outn,ls,edit)
       else:
-        res=await optimize_video(name,ls,edit)
+        await optimize_video(name,ls,edit)
     except Exception as e:
         rdir(mdir)
         print(e)
