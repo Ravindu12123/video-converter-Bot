@@ -103,7 +103,7 @@ def optimize_video(input_path, output_path,edit):
     finally:
         progress_thread.join()  # Ensure the progress thread ends
 
-    print("Optimization complete for:", filename)
+    print("Optimization complete!")
     #return "Optimization complete for:", filename
 
 
