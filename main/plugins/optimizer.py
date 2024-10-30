@@ -138,8 +138,7 @@ async def voptimize(event, msg):
         out = ((msg.file.name).split("."))[0]
     else:
         out = dt.now().isoformat("_", "seconds")
-    name=os.path.join(mdir,name)
-    outn=os.path.join(mdir,f"{out}.mp4")
+    outn=f"{out}.mp4"
     try:
         DT = time.time()
         await fast_download(name, file, Drone, edit, DT, "**DOWNLOADING:**")
@@ -157,7 +156,7 @@ async def voptimize(event, msg):
         return await edit.edit(f"An error occured while converting!\n\n{e}")
     else:
       await edit.edit("**file type:mp4**")
-    ls=os.path.join(mdir,f"optimized_{out}.mp4")
+    ls=f"optimized_{out}.mp4"
     try:
         await edit.edit("**OPTIMIZING**")
         if ftmp4 == 0:
