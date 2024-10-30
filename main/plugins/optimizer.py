@@ -176,7 +176,7 @@ async def voptimize(event, msg):
     duration = metadata["duration"]
     attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]
     try:
-        jpg = await generate_thumb(ls)
+        jpg = await generate_thumbnail(ls,os.path.join(mdir,"thumb.jpg"))
         uploader = await fast_upload(f'{ls}', f'{ls}', UT, Drone, edit, '**UPLOADING:**')
         await Drone.send_file(event.chat_id, uploader, caption=text, thumb=jpg, attributes=attributes, force_document=False)
     except Exception:
