@@ -1,6 +1,6 @@
 import os, subprocess, time
 from .. import BOT_UN
-from telethon import events
+from telethon import events, Button
 from LOCAL.localisation import SUPPORT_LINK, JPG, JPG2
 from ethon.telefunc import fast_download, fast_upload
 from ethon.pyfunc import bash, video_metadata
@@ -9,8 +9,15 @@ from datetime import datetime as dt
 from telethon.tl.types import DocumentAttributeVideo
 from moviepy.editor import VideoFileClip
 import shutil
-import threading
+from proglog import ProgressBarLogger
 
+
+pbt=[
+    [Button.inline("Update progress",data="pro_up")]
+]
+#progress={}
+progress='resting...'
+inp="x"
 mdir="videooptimize"
 #remove dir if exist------‐---------
 def rdir(directory_path):
@@ -63,25 +70,19 @@ def clean_dir(directory_path):
 
 
 def optimize_video(input_path, output_path,edit):
-    # Initialize progress to 0%
-    progress = "Optimizing: 0%"
-
-    def progress_callback(current, total):
-        # Calculate and update the progress percentage
-        percent = int((current / total) * 100)
-        progress = f"Optimizing: {percent}%"
-
-    async def print_progress():
-        # Print progress every 2 seconds until optimization completes or an error occurs
-        while "Optimizing" in progress:
-            print(progress)
-            await edit.edit(f"**OPTIMIZING**\n\n{progress}")
-            time.sleep(2)
-
-    # Start a separate thread to print progress every 2 seconds
-    progress_thread = threading.Thread(target=print_progress)
-    progress_thread.start()
-
+    progress='optimizing: 0%'
+    class MyBarLogger(ProgressBarLogger):
+        
+      def callback(self, **changes):
+        for (parameter, value) in changes.items():
+            progress["st"]='Parameter %s is now %s' % (parameter, value)
+            
+      def bars_callback(self, bar, attr, value,old_value=None):
+        percentage = (value / self.bars[bar]['total']) * 100
+        npr=f"Optimizing: {percentage:.2f}%"
+        if float(percentage) % 1 == 0:
+          progress["pres"]=npr
+    logger = MyBarLogger()
     try:
         with VideoFileClip(input_path) as video:
             video.write_videofile(
@@ -89,22 +90,21 @@ def optimize_video(input_path, output_path,edit):
                 bitrate="500k",
                 preset="ultrafast",
                 audio=True,
-                progress_bar=False,  # Disable the default progress bar
-                logger=None,         # Suppress moviepy's output
-                callback=progress_callback  # Pass the progress callback
+                logger=logger  # Pass the progress callback
             )
-        # Update to indicate that optimization is complete
         progress = "Optimized"
     except Exception as e:
-        # Update progress_dict to reflect error
         progress = f"Error: {str(e)}"
         print(f"Error optimizing : {e}")
-        #return f"Error optimizing : {e}"
     finally:
-        progress_thread.join()  # Ensure the progress thread ends
+        print("Optimization complete!")
 
-    print("Optimization complete!")
-    #return "Optimization complete for:", filename
+@Drone.on(events.callbackquery.CallbackQuery(data="pro_up"))
+async def _showprog(event):
+    np=progress
+    if inp !="x":
+        np=f"{inp} \n{progress}"
+    event.reply(np);
 
 
 #accepting command--------------------------
@@ -167,13 +167,25 @@ async def voptimize(event, msg):
         #await optimize_video(outn,ls,edit)
         # else:
         # await optimize_video(name,ls,edit)
+        class MyBarLogger(ProgressBarLogger):
         
+          def callback(self, **changes):
+             for (parameter, value) in changes.items():
+                inp=value
+              
+          def bars_callback(self, bar, attr, value,old_value=None):
+             percentage = (value / self.bars[bar]['total']) * 100
+             npr=f"Optimizing: {percentage:.2f}%"
+             if float(percentage) % 1 == 0:
+                progress["pres"]=npr
+        logger = MyBarLogger()
         with VideoFileClip(input_path) as video:
           video.write_videofile(
             output_path,
             bitrate="500k",
             preset="ultrafast",
-            audio=True
+            audio=True,
+            logger=logger
           )
         print("Optimization complete!")
     except Exception as e:
