@@ -1,5 +1,5 @@
 import os, subprocess, time
-from .. import BOT_UN
+from .. import Drone,BOT_UN
 from telethon import events, Button
 from LOCAL.localisation import SUPPORT_LINK, JPG, JPG2
 from ethon.telefunc import fast_download, fast_upload
