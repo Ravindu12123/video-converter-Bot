@@ -161,23 +161,22 @@ async def voptimize(event, msg):
     try:
         await edit.edit("**OPTIMIZING**")
         if ftmp4 == 0:
-           name=outn
+            name=outn
         input_path=name
         output_path=ls
         #await optimize_video(outn,ls,edit)
         # else:
         # await optimize_video(name,ls,edit)
         class MyBarLogger(ProgressBarLogger):
-        
           def callback(self, **changes):
              for (parameter, value) in changes.items():
-                inp=value
+                inp=f"value"
               
           def bars_callback(self, bar, attr, value,old_value=None):
              percentage = (value / self.bars[bar]['total']) * 100
              npr=f"Optimizing: {percentage:.2f}%"
              if float(percentage) % 1 == 0:
-                progress["pres"]=npr
+                progress=npr
         logger = MyBarLogger()
         with VideoFileClip(input_path) as video:
           video.write_videofile(
