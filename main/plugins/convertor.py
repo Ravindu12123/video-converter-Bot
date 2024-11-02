@@ -21,6 +21,17 @@ from ethon.pyfunc import bash, video_metadata
 from ethon.pyutils import rename
 from datetime import datetime as dt
 from telethon.tl.types import DocumentAttributeVideo
+from moviepy.editor import VideoFileClip
+
+def gen_thumb(video_path, thumb_path="thumb.jpg"):
+    with VideoFileClip(video_path) as video:
+        # Capture frame at the first second
+        frame = video.get_frame(1.0)
+        # Convert to Image and save as thumbnail
+        img = Image.fromarray(frame)
+        img.thumbnail((320, 180))  # Resize thumbnail to 320x180
+        img.save(thumb_path, "JPEG")
+    return thumb_path
 
 async def mp3(event, msg):
     Drone = event.client
@@ -393,8 +404,11 @@ async def video(event, msg):
         duration = metadata["duration"]
         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]           
         UT = time.time()
+        jpg = await gen_thumb(out)
         uploader = await fast_upload(f'{out}', f'{out}', UT, Drone, edit, '**UPLOADING:**')
-        await Drone.send_file(event.chat_id, uploader, caption=f'**CONVERTED by** : @{BOT_UN}', attributes=attributes, force_document=False)
+        await Drone.send_file(event.chat_id, uploader, caption=f'**CONVERTED by** : @{BOT_UN}',thumb=jpg, attributes=attributes, force_document=False)
+        if os.path.exists(file_path):
+           os.remove(file_path)
     except Exception as e:
         print(e)
         return await edit.edit(f"An error occured while uploading!\n\nContact [SUPPORT]({SUPPORT_LINK})")
