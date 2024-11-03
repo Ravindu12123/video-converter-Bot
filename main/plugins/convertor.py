@@ -221,9 +221,11 @@ async def mp4(event, msg):
         print(e)
         return await edit.edit(f"An error occured while converting!\n\nContact [SUPPORT]({SUPPORT_LINK})")
     try:
-        #UT = time.time()
-        #uploader = await fast_upload(f'{out}.mp4', f'{out}.mp4', UT, Drone, edit, '**UPLOADING:**')
-        #await Drone.send_file(event.chat_id, uploader, caption=f'**CONVERTED by** : @{BOT_UN}', force_document=True)
+        thumb_path='thumb.jpg'
+        with VideoFileClip(out) as video:
+            frame = video.get_frame(3.0)
+            img = Image.fromarray(frame)
+            img.save(thumb_path, "JPEG")
         metadata = video_metadata(f'{out}.mp4')
         width = metadata["width"]
         height = metadata["height"]
@@ -231,7 +233,9 @@ async def mp4(event, msg):
         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]           
         UT = time.time()
         uploader = await fast_upload(f'{out}.mp4', f'{out}.mp4', UT, Drone, edit, '**UPLOADING:**')
-        await Drone.send_file(event.chat_id, uploader, caption=f'**CONVERTED by** : @{BOT_UN}', attributes=attributes, force_document=False)
+        await Drone.send_file(event.chat_id, uploader, thumb=thumb_path, caption=f'**CONVERTED by** : @{BOT_UN}', attributes=attributes, force_document=False)
+        if os.path.exists(thumb_path):
+           os.remove(thumb_path)
     except Exception as e:
         print(e)
         return await edit.edit(f"An error occured while uploading!\n\nContact [SUPPORT]({SUPPORT_LINK})")
@@ -402,11 +406,8 @@ async def video(event, msg):
         #jpg = await gen_thumb(out)
         thumb_path='thumb.jpg'
         with VideoFileClip(out) as video:
-            # Capture frame at the first second
             frame = video.get_frame(3.0)
-            # Convert to Image and save as thumbnail
             img = Image.fromarray(frame)
-            #img.thumbnail((320, 180))  # Resize thumbnail to 320x180
             img.save(thumb_path, "JPEG")
         metadata = video_metadata(out)
         width = metadata["width"]
