@@ -22,6 +22,7 @@ from ethon.pyutils import rename
 from datetime import datetime as dt
 from telethon.tl.types import DocumentAttributeVideo
 from moviepy.editor import VideoFileClip
+from PIL import Image
 
 def gen_thumb(video_path, thumb_path="thumb.jpg"):
     with VideoFileClip(video_path) as video:
