@@ -399,7 +399,15 @@ async def video(event, msg):
         print(e)
         return await edit.edit(f"An error occured while converting!\n\nContact [SUPPORT]({SUPPORT_LINK})")
     try:
-        jpg = await gen_thumb(out)
+        #jpg = await gen_thumb(out)
+        thumb_path='thumb.jpg'
+        with VideoFileClip(video_path) as video:
+            # Capture frame at the first second
+            frame = video.get_frame(3.0)
+            # Convert to Image and save as thumbnail
+            img = Image.fromarray(frame)
+            #img.thumbnail((320, 180))  # Resize thumbnail to 320x180
+            img.save(thumb_path, "JPEG")
         metadata = video_metadata(out)
         width = metadata["width"]
         height = metadata["height"]
@@ -407,7 +415,7 @@ async def video(event, msg):
         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]           
         UT = time.time()
         uploader = await fast_upload(f'{out}', f'{out}', UT, Drone, edit, '**UPLOADING:**')
-        await Drone.send_file(event.chat_id, uploader,thumb=jpg, caption=f'**CONVERTED by** : @{BOT_UN}', attributes=attributes, force_document=False)
+        await Drone.send_file(event.chat_id, uploader,thumb=thumb_path, caption=f'**CONVERTED by** : @{BOT_UN}', attributes=attributes, force_document=False)
         if os.path.exists(file_path):
            os.remove(file_path)
     except Exception as e:
