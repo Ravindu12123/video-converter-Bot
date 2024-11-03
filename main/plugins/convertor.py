@@ -398,20 +398,20 @@ async def video(event, msg):
         print(e)
         return await edit.edit(f"An error occured while converting!\n\nContact [SUPPORT]({SUPPORT_LINK})")
     try:
+        jpg = await gen_thumb(out)
         metadata = video_metadata(out)
         width = metadata["width"]
         height = metadata["height"]
         duration = metadata["duration"]
         attributes = [DocumentAttributeVideo(duration=duration, w=width, h=height, supports_streaming=True)]           
         UT = time.time()
-        jpg = await gen_thumb(out)
         uploader = await fast_upload(f'{out}', f'{out}', UT, Drone, edit, '**UPLOADING:**')
-        await Drone.send_file(event.chat_id, uploader, caption=f'**CONVERTED by** : @{BOT_UN}',thumb=jpg, attributes=attributes, force_document=False)
+        await Drone.send_file(event.chat_id, uploader,thumb=jpg, caption=f'**CONVERTED by** : @{BOT_UN}', attributes=attributes, force_document=False)
         if os.path.exists(file_path):
            os.remove(file_path)
     except Exception as e:
         print(e)
-        return await edit.edit(f"An error occured while uploading!\n\nContact [SUPPORT]({SUPPORT_LINK})")
+        return await edit.edit(f"An error occured while uploading!\n\n{e}")
     await edit.delete()
     os.remove(out)                           
     
