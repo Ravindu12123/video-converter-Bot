@@ -401,7 +401,7 @@ async def video(event, msg):
     try:
         #jpg = await gen_thumb(out)
         thumb_path='thumb.jpg'
-        with VideoFileClip(video_path) as video:
+        with VideoFileClip(out) as video:
             # Capture frame at the first second
             frame = video.get_frame(3.0)
             # Convert to Image and save as thumbnail
