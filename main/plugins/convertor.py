@@ -26,10 +26,10 @@ from moviepy.editor import VideoFileClip
 def gen_thumb(video_path, thumb_path="thumb.jpg"):
     with VideoFileClip(video_path) as video:
         # Capture frame at the first second
-        frame = video.get_frame(1.0)
+        frame = video.get_frame(3.0)
         # Convert to Image and save as thumbnail
         img = Image.fromarray(frame)
-        img.thumbnail((320, 180))  # Resize thumbnail to 320x180
+        #img.thumbnail((320, 180))  # Resize thumbnail to 320x180
         img.save(thumb_path, "JPEG")
     return thumb_path
 
