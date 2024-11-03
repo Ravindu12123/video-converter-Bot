@@ -416,8 +416,8 @@ async def video(event, msg):
         UT = time.time()
         uploader = await fast_upload(f'{out}', f'{out}', UT, Drone, edit, '**UPLOADING:**')
         await Drone.send_file(event.chat_id, uploader,thumb=thumb_path, caption=f'**CONVERTED by** : @{BOT_UN}', attributes=attributes, force_document=False)
-        if os.path.exists(file_path):
-           os.remove(file_path)
+        if os.path.exists(thumb_path):
+           os.remove(thumb_path)
     except Exception as e:
         print(e)
         return await edit.edit(f"An error occured while uploading!\n\n{e}")
